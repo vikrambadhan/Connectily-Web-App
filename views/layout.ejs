@@ -3,9 +3,12 @@
         <title>
             <%= title %>
         </title>
+        
+        <link rel="stylesheet" href="/css/layout.css">
+        <%- style %>
 
     </head>
-    <link rel="stylesheet" href="/css/layout.css">
+    
 
     <body>
         <%- include('_header'); %>
@@ -13,6 +16,8 @@
         <%- body %>
 
         <%- include('_footer'); %>
+
+        <%- script %>
     
     </body>
 </html>
