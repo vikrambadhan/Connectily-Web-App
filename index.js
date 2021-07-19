@@ -24,8 +24,6 @@ app.set('layout extractStyles', true);
 app.set('layout extractScripts', true);
 
 
-
-
 // set up the view engine
 app.set('view engine', 'ejs');
 app.set('views', './views');
@@ -45,6 +43,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(passport.setAuthenticatedUser);
+
 // use express router
 app.use('/', require('./routes'));
 
@@ -56,3 +56,9 @@ app.listen(port, function(err){
 
     console.log(`Server is running on port: ${port}`);
 });
+
+
+
+// Note :-
+// We added 'start' field in package.json to automatically start nodemon .
+// we will use 'npm start' to fire up our server
