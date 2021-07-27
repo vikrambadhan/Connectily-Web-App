@@ -10,6 +10,19 @@ module.exports.profile = function(req, res){
     });
 }
 
+module.exports.update = function(req, res){
+    console.log(req.params, "Body data", req.body);
+    if(req.user.id == req.params.id){
+        User.findByIdAndUpdate(req.params.id, req.body, function(err, user){
+            return res.redirect('back');
+        });
+    }else{
+        return res.status(401).send('Unauthorized');
+    }
+}
+
+
+
 // render the sign up page
 module.exports.signUp = function(req, res){
 
