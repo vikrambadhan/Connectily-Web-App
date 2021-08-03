@@ -1,11 +1,10 @@
-#layout-footer {
-  color: white;
-  background: grey;
-  padding: 5px 10px;
+footer {
+  background-color: grey;
   display: flex;
-  justify-content: flex-start; }
-  #layout-footer a {
-    color: white;
-    text-decoration: none; }
-  #layout-footer .footer-nav ul {
-    list-style: none; }
+  align-items: center;
+  color: white; }
+  footer a {
+    text-decoration: none;
+    color: white; }
+    footer a:hover {
+      color: orange; }
