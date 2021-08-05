@@ -8,7 +8,7 @@ const db = require('./config/mongoose');
 const session = require('express-session');
 const passport = require('passport');
 const passportLocal = require('./config/passport-local-strategy');
-const MongoStore = require('connect-mongo').default;
+const MongoStore = require('connect-mongo');
 const sassMiddleware =require('node-sass-middleware');
 const flash = require('connect-flash');
 const customMware = require('./config/middleware');
@@ -56,7 +56,7 @@ app.use(session({
     },
     store: MongoStore.create(
         {
-            mongoUrl: 'mongodb://localhost/codeial_development',
+            mongoUrl: 'mongodb://localhost/codial_development',
             autoRemove: 'disabled'
         },
         function(err){
