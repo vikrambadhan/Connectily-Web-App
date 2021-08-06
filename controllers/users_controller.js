@@ -1,4 +1,6 @@
 const User = require('../models/user');
+const fs = require('fs');
+const path =  require('path');
 
 // Render the profile
 module.exports.profile = function(req, res){
@@ -35,8 +37,19 @@ if(req.user.id == req.params.id){
             user.email = req.body.email;
             
             if(req.file){
+
+                console.log("inside the file", req.file);
+
+                // If user has already uploaded profile pic
+                if(user.avatar){  
+                    // delete it from the file system
+                    fs.unlinkSync(path.join(__dirname, '..', user.avatar));
+                   console.log("file is unlinked", path.join(__dirname, '..', user.avatar));
+                }
+
                 // this is saving the path of the uploaded file into the avatar fieldin the user
-                user.avatar = User.avatarPath + '/' + req.file.filename;       
+                user.avatar = User.avatarPath + '/' + req.file.filename;    
+                console.log("new file is kinked", req.file.filename);   
             }
             user.save();
             return res.redirect('back');
