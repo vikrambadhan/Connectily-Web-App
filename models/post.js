@@ -18,12 +18,13 @@ const postSchema = new mongoose.Schema({
             ref: 'Comment'
         }
     ],
-    likes :[
+    likes: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref : 'Like'
+            ref: 'Like'
         }
     ]
+
 },{
     timestamps: true
 });

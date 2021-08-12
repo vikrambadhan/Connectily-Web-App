@@ -1,16 +1,14 @@
 const nodeMailer = require('../config/nodemailer');
 
 
-// this is another way of exporting a method
-exports.newComment = (comment) => {
-    let htmlString = nodeMailer.renderTemplate({comment: comment}, '/comments/new_comment.ejs');
+exports.newPassword = (data) => {
 
     nodeMailer.transporter.sendMail({
        from: 'vikram.badhan@gmail.com',
-       to: comment.user.email,  // to the commenter. For sending to the post owner use comment.post.user.email
+       to: data.user.email,
        // for multiple participants-->> to: 'first_email, second_email',
-       subject: "New Comment Published!",
-       html: htmlString
+       subject: "Reset your password!!",
+       html: `http://localhost:8000/password/reset/?access-token=${data.accessToken}`
     }, (err, info) => {
         if (err){
             console.log('Error in sending mail', err);

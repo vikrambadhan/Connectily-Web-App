@@ -1,13 +1,15 @@
 <link rel="stylesheet" href="/css/user_profile.css">
 
-<img src="<%= user.avatar %>" alt="<%= user.name %>" width="100">
-
+<!-- Profile picture of user -->
+<img src="<%= user.avatar %>" alt="<%= user.name %>" width="100"> <%= user.name %> &ensp; &ensp;
+<!-- Profile picture of profile user -->
+<img src="<%= profile_user.avatar %>" alt="<%= profile_user.name %>" width="100"> <%= profile_user.name %>
 
 
 
 <% if(user.id == profile_user.id){ %>
     <!-- if user matches then show the form -->
-    <form action="/users/update/<%= profile_user.id %>" enctype="multipart/form-data" method="POST">
+    <form action="/users/update/<%= profile_user.id %>" method="POST" enctype="multipart/form-data">
         <input type="text" name="name" placeholder="Your Name" value="<%= profile_user.name %>" required>
         <input type="email" name="email" placeholder="Your Email" value="<%= profile_user.email %>" required>
         
@@ -19,4 +21,34 @@
     <!-- else show only the profile info -->
     <p><%= profile_user.name %></p>
     <p><%= profile_user.email %></p>
+
+    <!-- If friendship exists -->
+    <% if(friendship){ %>
+        <% if(friendship.accepted){ %>
+            <a href="/friendship/remove-friend/<%= friendship.id %>"><button type="button">Remove Friend</button></a>
+        <% }else{ %>
+            <!-- Toggle friendship button for the request sender -->
+            <% if(friendship.from_user == user.id){ %>
+                <a class="toggle-friend-button" href="/friendship/toggle/<%= profile_user._id %>">
+                    <button type="submit">Cancel Request</button>
+                </a>
+            <% }else{ %>
+                <!-- Accept or delete friend for the receiver -->
+                <a href="/friendship/accept-request/<%= friendship.id %>"><button type="button">Accept Request</button></a>
+                <a href="/friendship/delete-request/<%= friendship.id %>"><button type="button">Delete Request</button></a>
+            <% } %>
+
+        <% } %>
+    <% }else{ %>
+        <!-- Toggle friendship button -->
+        <a class="toggle-friend-button" href="/friendship/toggle/<%= profile_user._id %>">
+            <button type="submit">Add Friend</button>
+        </a>
+    <% } %>    
+
+    
+
 <%} %>
+
+
+<script src="/js/toggle_friendship.js"></script>

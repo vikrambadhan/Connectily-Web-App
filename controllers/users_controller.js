@@ -1,72 +1,81 @@
 const User = require('../models/user');
+const path = require('path');
 const fs = require('fs');
-const path =  require('path');
+const Friendship = require('../models/friendship');
 
 // Render the profile
-module.exports.profile = function(req, res){
-    User.findById(req.params.id, function(err, user){
-        return res.render('user_profile', {
-            title: 'User Profile',
-            profile_user: user
-        });
+module.exports.profile = async function(req, res){
+    let profileUser = await User.findById(req.params.id);
+
+    let friendship;
+
+    // Check if current user and the profile_user are friends or not
+    // Find all the friendship of current user
+    let existingFriendship = await Friendship.find({_id: {$in: req.user.friendships}});
+
+    // If there exist atleast 1 friendship of current user
+    if(existingFriendship){
+        for(let i of existingFriendship){
+            if((i.from_user == req.user.id && i.to_user == req.params.id)
+                || (i.from_user == req.params.id && i.to_user == req.user.id)
+            ){
+                // They are friends !!
+                console.log("They are friends");
+                friendship = i;
+            }
+        }
+    }
+
+    return res.render('user_profile', {
+        title: 'User Profile',
+        profile_user: profileUser,
+        friendship: friendship
     });
 
 }
 
 // Action for updating the profile
 module.exports.update = async function(req, res){
-//     if(req.user.id == req.params.id){
-//         User.findByIdAndUpdate(req.params.id, req.body, function(err, user){
-//             req.flash('success', 'Updated!');
-//             return res.redirect('back');
-//         });
-//     }else{
-//         req.flash('error', 'Unauthorized!');
-//         return res.status(401).send('Unauthorized');
-//     }
+    if(req.user.id == req.params.id){
 
-if(req.user.id == req.params.id){
+        try{
 
-    try{
+            let user = await User.findById(req.params.id);
+            // using multer
+            User.uploadedAvatar(req, res, function(err){   // our statically created function inside user.js of models
+                if(err){console.log('****** Multer Error: ', err)}
 
-        let user = await User.findById(req.params.id);
-        User.uploadedAvatar(req, res, function(err){
-            if(err){ console.log('*****Multer Error:', err)}
+                // console.log(req.file);
 
-            user.name = req.body.name;
-            user.email = req.body.email;
-            
-            if(req.file){
+                user.name = req.body.name;    // We would have not been able to use req.body without multer in case of file uploading form
+                user.email = req.body.email;
 
-                console.log("inside the file", req.file);
+                if(req.file){
 
-                // If user has already uploaded profile pic
-                if(user.avatar){  
-                    // delete it from the file system
-                    fs.unlinkSync(path.join(__dirname, '..', user.avatar));
-                   console.log("file is unlinked", path.join(__dirname, '..', user.avatar));
+                    // If user has already uploaded profile pic
+                    if(user.avatar){  
+                        // delete it from the file system
+                        fs.unlinkSync(path.join(__dirname, '..', user.avatar));
+                    }
+
+                    // this is saving the path of the uploaded file into the avatar field in the user
+                    user.avatar = User.avatarPath + '/' + req.file.filename;
                 }
 
-                // this is saving the path of the uploaded file into the avatar fieldin the user
-                user.avatar = User.avatarPath + '/' + req.file.filename;    
-                console.log("new file is kinked", req.file.filename);   
-            }
-            user.save();
+                user.save();  // Important
+                req.flash('success', 'Updated!');
+                return res.redirect('back');
+            })
+
+        }catch(err){
+            req.flash('error', err);
             return res.redirect('back');
-        });
+        }
 
-    }catch(err){
-        req.flash('error', err);
-        return res.redirect('back');
-
+    }else{
+        req.flash('error', 'Unauthorized!');
+        return res.status(401).send('Unauthorized');
     }
-
-}else{
-    req.flash('error', 'Unauthorized!');
-     return res.status(401).send('Unauthorized');
-
-}
-
 }
 
 
