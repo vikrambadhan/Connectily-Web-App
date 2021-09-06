@@ -47,7 +47,7 @@ module.exports.home = async function(req, res){
         }
 
         return res.render('home', {
-            title: "Codeial | Home",
+            title: "Connectily | Home",
             posts:  posts,
             all_users: users,
             logged_in_user: loggedInUser

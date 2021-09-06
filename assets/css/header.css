@@ -23,7 +23,8 @@ header {
 
 #app-name {
   font-weight: bolder;
-  letter-spacing: 2px; }
+  letter-spacing: 2px;
+  font-family: cursive; }
 
 #sign-out {
   color: #c1f3f3; }

@@ -22,9 +22,9 @@ const development = {
 }
 
 
-const production =  {
-  name: 'production'
-}
+// const production =  {
+//   name: 'production'
+// }
 
 
 
